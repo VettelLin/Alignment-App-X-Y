@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="login_title" xml:space="preserve">
+    <value>User login</value>
+  </data>
+  <data name="login_welcome" xml:space="preserve">
+    <value>welcome</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="msg_identify_instrument" xml:space="preserve">
+    <value>Identifying instrument ...</value>
+  </data>
+  <data name="sample_regiration" xml:space="preserve">
+    <value>Sample</value>
+  </data>
+  <data name="msgbox_title" xml:space="preserve">
+    <value>Notice</value>
+  </data>
+  <data name="btn_ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="btn_cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btn_yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="btn_no" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="msg_connect_failed" xml:space="preserve">
+    <value>Instrument connection failed.</value>
+  </data>
+  <data name="msg_no_instrument_detected" xml:space="preserve">
+    <value>No instrument detected</value>
+  </data>
+  <data name="run_monitor" xml:space="preserve">
+    <value>Monitor</value>
+  </data>
+  <data name="data_analyse" xml:space="preserve">
+    <value>Analysis</value>
+  </data>
+  <data name="heating_detection" xml:space="preserve">
+    <value>Heating</value>
+  </data>
+  <data name="sample_unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="sample_standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="sample_positive" xml:space="preserve">
+    <value>Positive</value>
+  </data>
+  <data name="sample_negative" xml:space="preserve">
+    <value>Negative</value>
+  </data>
+  <data name="sample_ntc" xml:space="preserve">
+    <value>NTC</value>
+  </data>
+  <data name="logout_confirm" xml:space="preserve">
+    <value>Do you want to exit the software?</value>
+  </data>
+  <data name="sample_type" xml:space="preserve">
+    <value>Sample Type</value>
+  </data>
+  <data name="sample_id" xml:space="preserve">
+    <value>Sample ID</value>
+  </data>
+  <data name="patient_id" xml:space="preserve">
+    <value>Patient ID</value>
+  </data>
+  <data name="test_date" xml:space="preserve">
+    <value>Sampling Date</value>
+  </data>
+  <data name="setting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="experiment" xml:space="preserve">
+    <value>Experiment</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="english" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="chinese" xml:space="preserve">
+    <value>Chinese(Simplified)</value>
+  </data>
+  <data name="pcr_setting" xml:space="preserve">
+    <value>PCR Set</value>
+  </data>
+  <data name="user_manage" xml:space="preserve">
+    <value>User Manage</value>
+  </data>
+  <data name="delta_rn" xml:space="preserve">
+    <value>Amplification Curves(DeltaRn)</value>
+  </data>
+  <data name="program_run" xml:space="preserve">
+    <value>Program</value>
+  </data>
+  <data name="temperature_curve" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="standard_curve" xml:space="preserve">
+    <value>Standard Curves</value>
+  </data>
+  <data name="tbh_no" xml:space="preserve">
+    <value>No.</value>
+  </data>
+  <data name="tbh_well" xml:space="preserve">
+    <value>Well #</value>
+  </data>
+  <data name="tbh_sample_type" xml:space="preserve">
+    <value>Sample Type</value>
+  </data>
+  <data name="tbh_sample_id" xml:space="preserve">
+    <value>Sample ID</value>
+  </data>
+  <data name="tbh_channels" xml:space="preserve">
+    <value>Channels</value>
+  </data>
+  <data name="tbh_target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="tbh_ct" xml:space="preserve">
+    <value>Ct</value>
+  </data>
+  <data name="tbh_tm1" xml:space="preserve">
+    <value>Tm1</value>
+  </data>
+  <data name="tbh_tm2" xml:space="preserve">
+    <value>Tm2</value>
+  </data>
+  <data name="tbh_concentration" xml:space="preserve">
+    <value>Concentration</value>
+  </data>
+  <data name="tbh_concentration_st" xml:space="preserve">
+    <value>Concentration of Standard</value>
+  </data>
+  <data name="tbh_sample_name" xml:space="preserve">
+    <value>Sample Name</value>
+  </data>
+  <data name="tbh_project_name" xml:space="preserve">
+    <value>Project Name</value>
+  </data>
+  <data name="tbh_color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="tbh_conclusions" xml:space="preserve">
+    <value>Conclusions</value>
+  </data>
+  <data name="tbh_notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="username_password_empty" xml:space="preserve">
+    <value>Username or password cannot be empty</value>
+  </data>
+  <data name="username_password_error" xml:space="preserve">
+    <value>Incorrect username or password</value>
+  </data>
+  <data name="delta_rn_normalize" xml:space="preserve">
+    <value>Amplification Curves(Normalize)</value>
+  </data>
+  <data name="delta_rn_original" xml:space="preserve">
+    <value>Original Amplification Curves</value>
+  </data>
+  <data name="threshold" xml:space="preserve">
+    <value>Threshold</value>
+  </data>
+  <data name="dock_unit" xml:space="preserve">
+    <value>Dock Unit</value>
+  </data>
+  <data name="assay_type" xml:space="preserve">
+    <value>Assay Type</value>
+  </data>
+  <data name="h1_temperature" xml:space="preserve">
+    <value>H1 Temperature</value>
+  </data>
+  <data name="h3_temperature" xml:space="preserve">
+    <value>H3 Temperature</value>
+  </data>
+  <data name="h1_time" xml:space="preserve">
+    <value>H1 Time</value>
+  </data>
+  <data name="h3_time" xml:space="preserve">
+    <value>H3 Time</value>
+  </data>
+  <data name="tbh_assay" xml:space="preserve">
+    <value>Assay</value>
+  </data>
+  <data name="tbh_dock_unit" xml:space="preserve">
+    <value>Dock Unit</value>
+  </data>
+  <data name="tbh_starttime" xml:space="preserve">
+    <value>Start Time</value>
+  </data>
+  <data name="tbh_endtime" xml:space="preserve">
+    <value>End Time</value>
+  </data>
+  <data name="tbh_time_remaining" xml:space="preserve">
+    <value>Time Remaining</value>
+  </data>
+  <data name="tbh_current_heater" xml:space="preserve">
+    <value>Current Heater</value>
+  </data>
+  <data name="tbh_heat_time_remain" xml:space="preserve">
+    <value>Heat Time Remain</value>
+  </data>
+  <data name="msg_int_error" xml:space="preserve">
+    <value>Please enter a positive integer！</value>
+  </data>
+  <data name="msg_decimal_one_error" xml:space="preserve">
+    <value>Please enter a decimal place not exceeding one digit!</value>
+  </data>
+  <data name="msg_op_error" xml:space="preserve">
+    <value>Operation failed!</value>
+  </data>
+  <data name="msg_pause_lighting" xml:space="preserve">
+    <value>Pause will clear data, do you want to pause?</value>
+  </data>
+  <data name="msg_restart_lighting" xml:space="preserve">
+    <value>Restarting will clear the data, do you want to start?</value>
+  </data>
+  <data name="tube_detection_time" xml:space="preserve">
+    <value>Detection Time</value>
+  </data>
+  <data name="data_result_path" xml:space="preserve">
+    <value>System Backup Data</value>
+  </data>
+  <data name="user_path" xml:space="preserve">
+    <value>User Path</value>
+  </data>
+  <data name="btn_browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="time_remaining" xml:space="preserve">
+    <value>Time Remaining:</value>
+  </data>
+  <data name="export_select" xml:space="preserve">
+    <value>Select Export</value>
+  </data>
+  <data name="export_all" xml:space="preserve">
+    <value>Export All</value>
+  </data>
+  <data name="import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="file_cannot_access" xml:space="preserve">
+    <value>This file cannot be accessed</value>
+  </data>
+  <data name="msg_hole_pull_out" xml:space="preserve">
+    <value>The hole test tube has been pulled out and the test has been terminated!</value>
+  </data>
+  <data name="msg_stop_experiment" xml:space="preserve">
+    <value>Stop the {0} hole test tube experiment</value>
+  </data>
+  <data name="save_image" xml:space="preserve">
+    <value>Save Image</value>
+  </data>
+  <data name="analysis_parameters" xml:space="preserve">
+    <value>Analysis Parameters</value>
+  </data>
+</root>

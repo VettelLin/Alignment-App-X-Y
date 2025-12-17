@@ -1,0 +1,270 @@
+﻿<local:BasePage x:Class="General_PCR18.PageUi.HeatingDetectionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:General_PCR18.PageUi"
+      xmlns:lang="clr-namespace:General_PCR18.Lang"
+      xmlns:Wchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1280"
+      Title="HeatingDetectionPage">
+
+    <local:BasePage.Resources>
+
+        <Style TargetType="Label" x:Key="LBL_Title">
+            <Setter Property="Width" Value="120" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Margin" Value="10 0 10 0" />
+            <Setter Property="Foreground" Value="#000" />
+        </Style>
+
+        <Style TargetType="Label" x:Key="LBL_Content">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0 0 10 0" />
+            <Setter Property="Foreground" Value="#ffffff" />
+        </Style>
+
+        <Style x:Key="bd_circle" TargetType="Border">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="#f1f4f9" />
+            <Setter Property="BorderBrush" Value="#e1e2e3" />
+            <Setter Property="CornerRadius" Value="100" />
+            <Setter Property="Margin" Value="5 0" />
+        </Style>
+
+    </local:BasePage.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- 表格 -->
+        <Border Grid.Column="0" BorderThickness="1" Margin="20 20 10 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+            <ScrollViewer x:Name="scr" Margin="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <DataGrid x:Name="dataGrid" Style="{StaticResource data_grid_style}" AutoGenerateColumns="False"  VerticalAlignment="Top"
+      CanUserSortColumns="False"     Margin="5" IsReadOnly="True" 
+      CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionMode="Single"
+      CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{Binding Res.tbh_dock_unit, Source={x:Static lang:RService.Current}}" Width="150"  Binding="{Binding  Id}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_assay, Source={x:Static lang:RService.Current}}"   Width="120"  Binding="{Binding Class}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_starttime, Source={x:Static lang:RService.Current}}"  Width="120"  Binding="{Binding Sex}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_endtime, Source={x:Static lang:RService.Current}}"  Width="130"  Binding="{Binding ClassRank}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_time_remaining, Source={x:Static lang:RService.Current}}"  Width="140"  Binding="{Binding SchoolRank}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_current_heater, Source={x:Static lang:RService.Current}}"  Width="140"  Binding="{Binding SchoolRank}"/>
+                        <DataGridTextColumn Header="{Binding Res.tbh_heat_time_remain, Source={x:Static lang:RService.Current}}"  Width="140"  Binding="{Binding SchoolRank}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- 右边图表 样本 -->
+        <Grid Grid.Column="1" Margin="10 20 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="320"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- 曲线 -->
+            <Border Grid.Row="0" BorderThickness="1" Margin="5" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Ellipse Width="10" Height="10" Fill="#4054b2" Margin="40 0 10 0"/>
+                            <TextBlock Text="H1" VerticalAlignment="Center"></TextBlock>
+
+                            <Ellipse Width="10" Height="10" Fill="#9b2fae" Margin="50 0 10 0"/>
+                            <TextBlock Text="H3" VerticalAlignment="Center"></TextBlock>
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- 曲线 -->
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="#fff" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15">
+                        <WindowsFormsHost>
+                            <Wchart:Chart x:Name="chartStandard" />
+                        </WindowsFormsHost>
+                    </Border>
+
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="350"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <!-- 样本 -->
+                <Border Grid.Column="0" BorderThickness="1" Margin="10 20 10 10" BorderBrush="#d8d8d8"  CornerRadius="6">
+                    <Grid Margin="3 3 0 3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="30">
+                            </RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <!-- X 轴 -->
+                        <Grid Grid.Row="0" Background="#e6f4f5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label x:Name="txtBkAll" Content="All" Grid.Column="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown"  />
+                            <Label x:Name="txtBk1" Content="1" Grid.Column="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBk2" Content="2" Grid.Column="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBk3" Content="3" Grid.Column="3" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBk4" Content="4" Grid.Column="4" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBk5" Content="5" Grid.Column="5" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBk6" Content="6" Grid.Column="6" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        </Grid>
+
+                        <!-- 中间 -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Y轴 -->
+                            <Grid Grid.Column="0" Background="#e6f4f5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Label x:Name="txtBkA" Content="A" Grid.Row="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                                <Label x:Name="txtBkB" Content="B" Grid.Row="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                                <Label x:Name="txtBkC" Content="C" Grid.Row="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            </Grid>
+
+                            <!-- 样本 -->
+                            <Grid x:Name="sampleGrid" Grid.Column="1" Background="#fff" ShowGridLines="False">
+
+                            </Grid>
+
+                        </Grid>
+
+                        <!-- 底部说明 -->
+                        <StackPanel Grid.Row="2" Background="#e6f4f5" Orientation="Horizontal">
+                            <!-- rgb(155,81,224) -->
+                            <Ellipse Width="10" Height="10" Fill="#9b51e0" Margin="40 0 10 0"/>
+                            <TextBlock Text="HPV" VerticalAlignment="Center"></TextBlock>
+
+                            <!-- rgb(33,150,83) -->
+                            <Ellipse Width="10" Height="10" Fill="#219653" Margin="50 0 10 0"/>
+                            <TextBlock Text="RNA" VerticalAlignment="Center"></TextBlock>
+
+                            <!-- rgb(235,87,87) -->
+                            <Ellipse Width="10" Height="10" Fill="#eb5757" Margin="50 0 10 0"/>
+                            <TextBlock Text="DNA" VerticalAlignment="Center"></TextBlock>
+
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+
+                <!-- 右边编辑框 -->
+                <Grid Grid.Column="1" Background="#fff" Margin="10 20 10 20">
+                    <Border BorderThickness="1" Margin="20" BorderBrush="#e6f4f5"  CornerRadius="6">
+                        <StackPanel Orientation="Vertical" >
+
+                            <!-- 管号 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.dock_unit, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtDockUnit" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                    TextChanged="txtDockUnit_TextChanged"></TextBox>
+                            </DockPanel>
+
+                            <!-- 化验类型 -->
+                            <DockPanel Margin="0 30 20 0">
+                                <Label Content="{Binding Res.assay_type, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <ComboBox x:Name="cmbAssayType" VerticalContentAlignment="Center" SelectionChanged="cmbAssayType_SelectionChanged" >
+                                    <ComboBoxItem Tag="1" Content="HPV"></ComboBoxItem>
+                                    <ComboBoxItem Tag="2" Content="RNA"></ComboBoxItem>
+                                    <ComboBoxItem Tag="3" Content="DNA"></ComboBoxItem>
+                                </ComboBox>
+                            </DockPanel>
+
+                            <!-- H1 温度 一位小数 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.h1_temperature, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtH1Temp" Tag="H1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                    LostFocus="txtH1Temp_LostFocus"></TextBox>
+                            </DockPanel>
+
+                            <!-- H3 温度 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.h3_temperature, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtH3Temp" Tag="H3"  VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                LostFocus="txtH1Temp_LostFocus"></TextBox>
+                            </DockPanel>
+
+                            <!-- H1 时间 单位秒 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.h1_time, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtH1Time" Tag="H1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                    LostFocus="txtH1Time_LostFocus"></TextBox>
+                            </DockPanel>
+
+                            <!-- H3 时间 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.h3_time, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtH3Time" Tag="H3" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                    LostFocus="txtH1Time_LostFocus"></TextBox>
+                            </DockPanel>
+
+                            <!-- 病人ID -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label DockPanel.Dock="Left" Content="{Binding Res.patient_id, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <TextBox x:Name="txtPatientId" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Left" MaxLength="100"
+                                    TextChanged="txtPatientId_TextChanged"></TextBox>
+                            </DockPanel>
+
+                            <!-- 采样日期 -->
+                            <DockPanel Margin="0 30 20 0" LastChildFill="True">
+                                <Label Content="{Binding Res.test_date, Source={x:Static lang:RService.Current}}" Style="{StaticResource LBL_Title}"  />
+                                <DatePicker x:Name="dpTestDate"  Style="{StaticResource DatePickerStyle1}"           
+                     HorizontalAlignment="Stretch" FontSize="12"  BorderThickness="0" 
+                              VerticalContentAlignment="Center" SelectedDateChanged="dpTestDate_SelectedDateChanged"
+                              PreviewTextInput="dpTestDate_PreviewTextInput" />
+                            </DockPanel>
+
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</local:BasePage>

@@ -1,0 +1,24 @@
+﻿<Window x:Class="General_PCR18.PageUi.TestWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:General_PCR18.PageUi"
+        mc:Ignorable="d"
+        Title="TestWin" Height="450" Width="800">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Height="80">
+                <Label Content="接收命令Hex：" VerticalAlignment="Center"></Label>
+                <TextBox x:Name="cmdInput" Text="5E E8 00 18 01 03 04 06 08 0A 0C 0E 10 12 14 16 18 1A 1C 1E 20 22 00 6B" Width="500" Height="80" TextWrapping="Wrap" ></TextBox>
+                <Button Click="CmdButton_Click" Content="接收" Width="60" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Height="80" Margin="0 20 0 0">
+                <Label Content="发送命令Hex：" VerticalAlignment="Center"></Label>
+                <TextBox x:Name="cmdInput2" Text="" Width="500" Height="80" TextWrapping="Wrap" ></TextBox>
+                <Button Click="CmdButton_Click2" Content="发送" Width="60" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

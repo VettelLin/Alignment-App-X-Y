@@ -1,0 +1,205 @@
+﻿<local:BasePage x:Class="General_PCR18.PageUi.DataAnalysePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:General_PCR18.PageUi"
+      xmlns:lang="clr-namespace:General_PCR18.Lang"
+      xmlns:Wchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+      mc:Ignorable="d" 
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      Title="DataAnalysePage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- 样品 -->
+            <Border Grid.Column="0" BorderThickness="1" Margin="20 20 10 10" BorderBrush="#d8d8d8"  CornerRadius="6">
+                <Grid Margin="3 3 0 3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="30">
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!-- X 轴 -->
+                    <Grid Grid.Row="0" Background="#e6f4f5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="txtBkAll" Content="All" Grid.Column="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown"  />
+                        <Label x:Name="txtBk1" Content="1" Grid.Column="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk2" Content="2" Grid.Column="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk3" Content="3" Grid.Column="3" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk4" Content="4" Grid.Column="4" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk5" Content="5" Grid.Column="5" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk6" Content="6" Grid.Column="6" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                    </Grid>
+
+                    <!-- 中间 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Y轴 -->
+                        <Grid Grid.Column="0" Background="#e6f4f5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label x:Name="txtBkA" Content="A" Grid.Row="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkB" Content="B" Grid.Row="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkC" Content="C" Grid.Row="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        </Grid>
+
+                        <!-- 样本 -->
+                        <Grid x:Name="sampleGrid" Grid.Column="1" Background="#fff" ShowGridLines="False">
+
+                        </Grid>
+                        <!-- 框选遮罩层（覆盖在样本网格之上） -->
+                        <Canvas x:Name="selectionCanvas" Grid.Column="1" IsHitTestVisible="False" />
+
+                    </Grid>
+
+                    <!-- 底部说明 -->
+                    <StackPanel Grid.Row="2" Background="#e6f4f5" Orientation="Horizontal">
+                        <!-- rgb(155,81,224) -->
+                        <Ellipse Width="10" Height="10" Fill="#9b51e0" Margin="40 0 10 0"/>
+                        <TextBlock Text="HPV" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(33,150,83) -->
+                        <Ellipse Width="10" Height="10" Fill="#219653" Margin="50 0 10 0"/>
+                        <TextBlock Text="RNA" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(235,87,87) -->
+                        <Ellipse Width="10" Height="10" Fill="#eb5757" Margin="50 0 10 0"/>
+                        <TextBlock Text="DNA" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <!-- 扩增曲线 -->
+            <Border Grid.Column="1" BorderThickness="1" Margin="10 20 20 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Height="30" Margin="50 0 0 0">
+
+                        <ComboBox x:Name="cmbCurveType" VerticalContentAlignment="Center" Width="240" SelectionChanged="cmbCurveType_SelectionChanged">
+                            <ComboBoxItem Tag="1" Content="{Binding Res.delta_rn, Source={x:Static lang:RService.Current}}"></ComboBoxItem>
+                            <ComboBoxItem Tag="2" Content="{Binding Res.delta_rn_normalize, Source={x:Static lang:RService.Current}}"></ComboBoxItem>
+                            <ComboBoxItem Tag="3" Content="{Binding Res.delta_rn_original, Source={x:Static lang:RService.Current}}"></ComboBoxItem>
+                        </ComboBox>
+
+                        <Label x:Name="lblThreshold" Content="{Binding Res.threshold, Source={x:Static lang:RService.Current}}"  Margin="30 0 0 0" VerticalContentAlignment="Center"></Label>
+                        <TextBox x:Name="txtThreshold" Text="100.0" Width="100" VerticalContentAlignment="Center" 
+                            LostFocus="txtThreshold_LostFocus"
+                            PreviewTextInput="txtThreshold_PreviewTextInput"></TextBox>
+
+                        <ComboBox x:Name="cmbFAM" VerticalContentAlignment="Center" Width="100" Margin="20 0 0 0" SelectionChanged="cmbFAM_SelectionChanged">
+                            <ComboBoxItem Tag="FAM" Content="FAM"></ComboBoxItem>
+                            <ComboBoxItem Tag="Cy5" Content="Cy5"></ComboBoxItem>
+                            <ComboBoxItem Tag="VIC" Content="VIC"></ComboBoxItem>
+                            <ComboBoxItem Tag="Cy55" Content="Cy5.5"></ComboBoxItem>
+                            <ComboBoxItem Tag="ROX" Content="ROX"></ComboBoxItem>
+                            <ComboBoxItem Tag="All" Content="All"></ComboBoxItem>
+                        </ComboBox>
+
+                        <Button x:Name="btnThresholdSetting" Content="{Binding Res.setting, Source={x:Static lang:RService.Current}}" Padding="10 0" Margin="20 0 0 0" HorizontalAlignment="Right"
+                                Click="btnThresholdSetting_Click"/>
+
+                    </StackPanel>
+
+                    <Border Grid.Row="1" x:Name="bdDeltaRn" BorderThickness="1" BorderBrush="#fff" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15">
+                        <WindowsFormsHost>
+                            <Wchart:Chart x:Name="chartDeltaRn" />
+                        </WindowsFormsHost>
+                    </Border>
+
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- 表格 -->
+            <Border Grid.Column="0" BorderThickness="1" Margin="20 20 10 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <ScrollViewer x:Name="scr" Margin="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <DataGrid x:Name="dataGrid" Style="{StaticResource data_grid_style}" AutoGenerateColumns="False"  VerticalAlignment="Top"
+                  CanUserSortColumns="False"     Margin="5" IsReadOnly="True" 
+                  CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionMode="Single"
+                  CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" CanUserAddRows="False" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{Binding Res.tbh_no, Source={x:Static lang:RService.Current}}" Width="60"  Binding="{Binding Seq}"/>
+                            <DataGridTextColumn Header="{Binding Res.tbh_well, Source={x:Static lang:RService.Current}}"   Width="80"  Binding="{Binding Well}"/>
+                            <DataGridTextColumn Header="{Binding Res.tbh_sample_type, Source={x:Static lang:RService.Current}}"  Width="100"  Binding="{Binding SampleType}"/>
+                            <DataGridTextColumn Header="{Binding Res.tbh_sample_id, Source={x:Static lang:RService.Current}}"  Width="120"  Binding="{Binding SampleId}"/>
+                            <DataGridTextColumn Header="{Binding Res.tbh_channels, Source={x:Static lang:RService.Current}}"  Width="80"  Binding="{Binding Channel}"/>
+                            <DataGridTextColumn Header="{Binding Res.tbh_ct, Source={x:Static lang:RService.Current}}"  Width="80"  Binding="{Binding Ct}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
+            </Border>
+
+            <!-- 标准曲线 -->
+            <Border Grid.Column="1" BorderThickness="1" Margin="10 20 20 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="{Binding Res.standard_curve, Source={x:Static lang:RService.Current}}"  Margin="15 15 0 0"></Label>
+
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="#fff" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <WindowsFormsHost Grid.Row="0">
+                                <Wchart:Chart x:Name="chartStandard" />
+                            </WindowsFormsHost>
+
+                            <TextBlock Grid.Row="1" x:Name="txtCtValues" Margin="0,10,0,0" TextWrapping="Wrap" FontSize="18" Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Grid>
+</local:BasePage>

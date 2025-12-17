@@ -1,0 +1,46 @@
+<Window x:Class="General_PCR18.PageUi.FilterParametersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Filter Parameters" Height="300" Width="420" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Background="#f7fafc" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0 0 0 10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Median window (odd >=3)" VerticalAlignment="Center"/>
+            <TextBox x:Name="txtMedianWindow" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Smoothing passes" VerticalAlignment="Center" Margin="0,8,0,0"/>
+            <TextBox x:Name="txtSmoothPasses" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Margin="0,8,0,0"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Smooth forward M" VerticalAlignment="Center" Margin="0,8,0,0"/>
+            <TextBox x:Name="txtSmoothForwardM" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" Margin="0,8,0,0"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Smooth backward N" VerticalAlignment="Center" Margin="0,8,0,0"/>
+            <TextBox x:Name="txtSmoothBackwardN" Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center" Margin="0,8,0,0"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="CT threshold" VerticalAlignment="Center" Margin="0,8,0,0"/>
+            <TextBox x:Name="txtCtThreshold" Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center" Margin="0,8,0,0"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="80" Margin="0,0,10,0" Click="Ok_Click"/>
+            <Button Content="Cancel" Width="80" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+

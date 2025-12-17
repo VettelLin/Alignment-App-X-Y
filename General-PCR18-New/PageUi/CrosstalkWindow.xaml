@@ -1,0 +1,87 @@
+<Window x:Class="General_PCR18.PageUi.CrosstalkWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Crosstalk Corrections" Height="420" Width="760" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Crosstalk Corrections" FontSize="18" Margin="0 0 0 10"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Channels" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="FAM" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Cy5" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="VIC" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Grid.Column="4" Text="Cy5.5" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Grid.Column="5" Text="ROX" VerticalAlignment="Center" FontWeight="Bold"/>
+
+            <!-- Row 1 FAM -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="FAM" VerticalAlignment="Center"/>
+            <TextBox x:Name="txt_00" Grid.Row="1" Grid.Column="1"/>
+            <TextBox x:Name="txt_01" Grid.Row="1" Grid.Column="2"/>
+            <TextBox x:Name="txt_02" Grid.Row="1" Grid.Column="3"/>
+            <TextBox x:Name="txt_03" Grid.Row="1" Grid.Column="4"/>
+            <TextBox x:Name="txt_04" Grid.Row="1" Grid.Column="5"/>
+
+            <!-- Row 2 Cy5 -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Cy5" VerticalAlignment="Center"/>
+            <TextBox x:Name="txt_10" Grid.Row="2" Grid.Column="1"/>
+            <TextBox x:Name="txt_11" Grid.Row="2" Grid.Column="2"/>
+            <TextBox x:Name="txt_12" Grid.Row="2" Grid.Column="3"/>
+            <TextBox x:Name="txt_13" Grid.Row="2" Grid.Column="4"/>
+            <TextBox x:Name="txt_14" Grid.Row="2" Grid.Column="5"/>
+
+            <!-- Row 3 VIC -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="VIC" VerticalAlignment="Center"/>
+            <TextBox x:Name="txt_20" Grid.Row="3" Grid.Column="1"/>
+            <TextBox x:Name="txt_21" Grid.Row="3" Grid.Column="2"/>
+            <TextBox x:Name="txt_22" Grid.Row="3" Grid.Column="3"/>
+            <TextBox x:Name="txt_23" Grid.Row="3" Grid.Column="4"/>
+            <TextBox x:Name="txt_24" Grid.Row="3" Grid.Column="5"/>
+
+            <!-- Row 4 Cy5.5 -->
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Cy5.5" VerticalAlignment="Center"/>
+            <TextBox x:Name="txt_30" Grid.Row="4" Grid.Column="1"/>
+            <TextBox x:Name="txt_31" Grid.Row="4" Grid.Column="2"/>
+            <TextBox x:Name="txt_32" Grid.Row="4" Grid.Column="3"/>
+            <TextBox x:Name="txt_33" Grid.Row="4" Grid.Column="4"/>
+            <TextBox x:Name="txt_34" Grid.Row="4" Grid.Column="5"/>
+
+            <!-- Row 5 ROX -->
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="ROX" VerticalAlignment="Center"/>
+            <TextBox x:Name="txt_40" Grid.Row="5" Grid.Column="1"/>
+            <TextBox x:Name="txt_41" Grid.Row="5" Grid.Column="2"/>
+            <TextBox x:Name="txt_42" Grid.Row="5" Grid.Column="3"/>
+            <TextBox x:Name="txt_43" Grid.Row="5" Grid.Column="4"/>
+            <TextBox x:Name="txt_44" Grid.Row="5" Grid.Column="5"/>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Width="90" Height="28" Content="Save" Margin="0,0,10,0" Click="Save_Click"/>
+            <Button Width="90" Height="28" Content="Cancel" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+

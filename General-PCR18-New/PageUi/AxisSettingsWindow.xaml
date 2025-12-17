@@ -1,0 +1,62 @@
+<Window x:Class="General_PCR18.PageUi.AxisSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置" Height="360" Width="640" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="20" Background="#ffffff">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 最小值 -->
+            <StackPanel Grid.Column="0" Margin="0,10,0,0">
+                <TextBlock Text="最小值" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,12" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="X轴：" Width="60" VerticalAlignment="Center" />
+                    <TextBox x:Name="txtXMin" Width="180" VerticalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Y轴：" Width="60" VerticalAlignment="Center" />
+                    <TextBox x:Name="txtYMin" Width="180" VerticalContentAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 占位分隔 -->
+            <Grid Grid.Column="1" />
+
+            <!-- 最大值 -->
+            <StackPanel Grid.Column="2" Margin="0,10,0,0">
+                <TextBlock Text="最大值" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,12" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="X轴：" Width="60" VerticalAlignment="Center" />
+                    <TextBox x:Name="txtXMax" Width="180" VerticalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Y轴：" Width="60" VerticalAlignment="Center" />
+                    <TextBox x:Name="txtYMax" Width="180" VerticalContentAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <DockPanel Grid.Row="1" Margin="0,24,0,0">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button x:Name="btnDefault" Content="默认" Width="120" Margin="0,0,10,0" Click="Default_Click" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button x:Name="btnSave" Content="保存" Width="120" Margin="0,0,10,0" Click="Save_Click" />
+                <Button x:Name="btnCancel" Content="取消" Width="120" Click="Cancel_Click" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
+
+

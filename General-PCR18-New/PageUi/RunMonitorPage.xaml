@@ -1,0 +1,323 @@
+﻿<local:BasePage x:Class="General_PCR18.PageUi.RunMonitorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:General_PCR18.PageUi"
+      xmlns:lang="clr-namespace:General_PCR18.Lang"
+      xmlns:Wchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+      mc:Ignorable="d" 
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      Title="RunMonitorPage">
+
+    <local:BasePage.Resources>
+
+        <Style x:Key="lbl_title" TargetType="Label">
+            <Setter Property="FontSize" Value="14"></Setter>
+            <Setter Property="Height" Value="38"></Setter>
+            <Setter Property="Width" Value="250"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border BorderThickness="2" BorderBrush="#06919d" Padding="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="bd_circle" TargetType="Border">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="#f1f4f9" />
+            <Setter Property="BorderBrush" Value="#e1e2e3" />
+            <Setter Property="CornerRadius" Value="100" />
+            <Setter Property="Margin" Value="5 0" />
+        </Style>
+
+    </local:BasePage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- 曲线 -->
+            <Border Grid.Column="0" BorderThickness="1" Margin="20 20 10 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Content="{Binding Res.delta_rn, Source={x:Static lang:RService.Current}}" Style="{StaticResource lbl_title}" Margin="15 15 0 0"></Label>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Border Tag="FAM" Style="{StaticResource bd_circle}" MouseLeftButtonDown="FAM_MouseLeftButtonDown">
+                                <Label Content="FAM" Foreground="#607c6d" FontSize="10" 
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                            </Border>
+                            <Border Tag="Cy5" Style="{StaticResource bd_circle}" MouseLeftButtonDown="FAM_MouseLeftButtonDown">
+                                <Label Content="Cy5" Foreground="#607c6d" FontSize="10" 
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                            </Border>
+                            <Border Tag="VIC" Style="{StaticResource bd_circle}" MouseLeftButtonDown="FAM_MouseLeftButtonDown">
+                                <Label Content="VIC" Foreground="#607c6d" FontSize="10" 
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                            </Border>
+                            <Border Tag="Cy55" Style="{StaticResource bd_circle}" MouseLeftButtonDown="FAM_MouseLeftButtonDown">
+                                <Label Content="Cy5.5" Foreground="#607c6d" FontSize="9" 
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                            </Border>
+                            <Border Tag="ROX" Style="{StaticResource bd_circle}" MouseLeftButtonDown="FAM_MouseLeftButtonDown">
+                                <Label Content="ROX" Foreground="#607c6d" FontSize="10" 
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="#fff" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15">
+                        <WindowsFormsHost>
+                            <Wchart:Chart x:Name="chartDeltaRn" />
+                        </WindowsFormsHost>
+                    </Border>
+
+                </Grid>
+            </Border>
+
+            <!-- 样本 -->
+            <Border Grid.Column="1" BorderThickness="1" Margin="10 20 20 10" BorderBrush="#d8d8d8"  CornerRadius="6">
+                <Grid Margin="3 3 0 3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="30">
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!-- X 轴 -->
+                    <Grid Grid.Row="0" Background="#e6f4f5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="txtBkAll" Content="All" Grid.Column="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown"  />
+                        <Label x:Name="txtBk1" Content="1" Grid.Column="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk2" Content="2" Grid.Column="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk3" Content="3" Grid.Column="3" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk4" Content="4" Grid.Column="4" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk5" Content="5" Grid.Column="5" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk6" Content="6" Grid.Column="6" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                    </Grid>
+
+                    <!-- 中间 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Y轴 -->
+                        <Grid Grid.Column="0" Background="#e6f4f5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label x:Name="txtBkA" Content="A" Grid.Row="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkB" Content="B" Grid.Row="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkC" Content="C" Grid.Row="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab_MouseLeftButtonDown" />
+                        </Grid>
+
+                        <!-- 样本 -->
+                        <Grid x:Name="sampleGrid" Grid.Column="1" Background="#fff" ShowGridLines="False">
+
+                        </Grid>
+
+                    </Grid>
+
+                    <!-- 底部说明 -->
+                    <StackPanel Grid.Row="2" Background="#e6f4f5" Orientation="Horizontal">
+                        <!-- rgb(155,81,224) -->
+                        <Ellipse Width="10" Height="10" Fill="#9b51e0" Margin="40 0 10 0"/>
+                        <TextBlock Text="HPV" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(33,150,83) -->
+                        <Ellipse Width="10" Height="10" Fill="#219653" Margin="50 0 10 0"/>
+                        <TextBlock Text="RNA" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(235,87,87) -->
+                        <Ellipse Width="10" Height="10" Fill="#eb5757" Margin="50 0 10 0"/>
+                        <TextBlock Text="DNA" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- 运行程序 -->
+            <Border Grid.Column="0" BorderThickness="1" Margin="20 20 10 10" BorderBrush="#d8d8d8" Background="#fff" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="{Binding Res.program_run, Source={x:Static lang:RService.Current}}" Style="{StaticResource lbl_title}" Margin="10"></Label>
+
+                    <!-- 曲线 -->
+                    <Border Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <!--<WindowsFormsHost>
+                            <Wchart:Chart x:Name="chartTemp" />
+                        </WindowsFormsHost>-->
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel  Orientation="Horizontal" Margin="10" Visibility="Visible">
+                                <Label Content="Amplification Block temperature:" FontSize="18"></Label>
+                                <Label x:Name="hotCoverTemp" Content="--" FontSize="18"></Label>
+                                <Label Content="℃" FontSize="18"></Label>
+                            </StackPanel>
+
+                            <StackPanel x:Name="envTempSP" Orientation="Horizontal" Margin="10" Visibility="Visible">
+                                <Label Content="Ambient temperature:" FontSize="18"></Label>
+                                <Label x:Name="envTemp" Content="--" FontSize="18"></Label>
+                                <Label Content="℃" FontSize="18"></Label>
+                            </StackPanel>
+                            
+                            <StackPanel x:Name="lysisTempASp" Orientation="Horizontal" Margin="10" Visibility="Visible">
+                                <Label Content="Lysis ROWA:" FontSize="16"></Label>
+                                <Label x:Name="lysisTempA" Content="---" FontSize="16"></Label>
+                                <Label Content="℃" FontSize="16"></Label>
+                            </StackPanel>
+
+                            <StackPanel x:Name="lysisTempBSp" Orientation="Horizontal" Margin="10" Visibility="Visible">
+                                <Label Content="Lysis ROWB:" FontSize="16"></Label>
+                                <Label x:Name="lysisTempB" Content="---" FontSize="16"></Label>
+                                <Label Content="℃" FontSize="16"></Label>
+                            </StackPanel>
+
+                            <StackPanel x:Name="lysisTempCSp" Orientation="Horizontal" Margin="10" Visibility="Visible">
+                                <Label Content="Lysis ROWC:" FontSize="16"></Label>
+                                <Label x:Name="lysisTempC" Content="---" FontSize="16"></Label>
+                                <Label Content="℃" FontSize="16"></Label>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- 时间 -->
+            <Border Grid.Column="1" BorderThickness="1" Margin="10 20 20 10" BorderBrush="#d8d8d8"  CornerRadius="6">
+                <Grid Margin="3 3 0 3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="30">
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!-- X 轴 -->
+                    <Grid Grid.Row="0" Background="#e6f4f5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="txtBkAll2" Content="All" Grid.Column="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown"  />
+                        <Label x:Name="txtBk12" Content="1" Grid.Column="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk22" Content="2" Grid.Column="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk32" Content="3" Grid.Column="3" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk42" Content="4" Grid.Column="4" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk52" Content="5" Grid.Column="5" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        <Label x:Name="txtBk62" Content="6" Grid.Column="6" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                    </Grid>
+
+                    <!-- 中间 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Y轴 -->
+                        <Grid Grid.Column="0" Background="#e6f4f5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label x:Name="txtBkA2" Content="A" Grid.Row="0" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkB2" Content="B" Grid.Row="1" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                            <Label x:Name="txtBkC2" Content="C" Grid.Row="2" Style="{StaticResource TabStyle}" MouseLeftButtonDown="XTab2_MouseLeftButtonDown" />
+                        </Grid>
+
+                        <!-- 样本 -->
+                        <Grid x:Name="sampleGrid2" Grid.Column="1" Background="#fff" ShowGridLines="False">
+
+                        </Grid>
+
+                    </Grid>
+
+                    <!-- 底部说明 -->
+                    <StackPanel Grid.Row="2" Background="#e6f4f5" Orientation="Horizontal">
+                        <!-- rgb(155,81,224) -->
+                        <Ellipse Width="10" Height="10" Fill="#9b51e0" Margin="40 0 10 0"/>
+                        <TextBlock Text="HPV" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(33,150,83) -->
+                        <Ellipse Width="10" Height="10" Fill="#219653" Margin="50 0 10 0"/>
+                        <TextBlock Text="RNA" VerticalAlignment="Center"></TextBlock>
+
+                        <!-- rgb(235,87,87) -->
+                        <Ellipse Width="10" Height="10" Fill="#eb5757" Margin="50 0 10 0"/>
+                        <TextBlock Text="DNA" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+</local:BasePage>

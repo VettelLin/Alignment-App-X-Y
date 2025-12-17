@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="login" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="login_title" xml:space="preserve">
+    <value>用户登录</value>
+  </data>
+  <data name="login_welcome" xml:space="preserve">
+    <value>欢迎使用</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="msg_identify_instrument" xml:space="preserve">
+    <value>仪器识别中…</value>
+  </data>
+  <data name="sample_regiration" xml:space="preserve">
+    <value>样本登记</value>
+  </data>
+  <data name="msgbox_title" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="btn_ok" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="btn_cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="btn_yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="btn_no" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="msg_connect_failed" xml:space="preserve">
+    <value>连接仪器失败，请确认仪器已经连接。</value>
+  </data>
+  <data name="msg_no_instrument_detected" xml:space="preserve">
+    <value>未检测到仪器</value>
+  </data>
+  <data name="run_monitor" xml:space="preserve">
+    <value>运行监控</value>
+  </data>
+  <data name="data_analyse" xml:space="preserve">
+    <value>数据分析</value>
+  </data>
+  <data name="heating_detection" xml:space="preserve">
+    <value>加热检测</value>
+  </data>
+  <data name="sample_unknown" xml:space="preserve">
+    <value>待测样品</value>
+  </data>
+  <data name="sample_standard" xml:space="preserve">
+    <value>标准品</value>
+  </data>
+  <data name="sample_positive" xml:space="preserve">
+    <value>阳性对照</value>
+  </data>
+  <data name="sample_negative" xml:space="preserve">
+    <value>阴性对照</value>
+  </data>
+  <data name="sample_ntc" xml:space="preserve">
+    <value>无模板对照</value>
+  </data>
+  <data name="logout_confirm" xml:space="preserve">
+    <value>是否退出软件？</value>
+  </data>
+  <data name="sample_type" xml:space="preserve">
+    <value>样本类型</value>
+  </data>
+  <data name="sample_id" xml:space="preserve">
+    <value>样本ID</value>
+  </data>
+  <data name="patient_id" xml:space="preserve">
+    <value>患者ID</value>
+  </data>
+  <data name="test_date" xml:space="preserve">
+    <value>检验日期</value>
+  </data>
+  <data name="setting" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="experiment" xml:space="preserve">
+    <value>实验</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="english" xml:space="preserve">
+    <value>英文</value>
+  </data>
+  <data name="chinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="pcr_setting" xml:space="preserve">
+    <value>PCR 设置</value>
+  </data>
+  <data name="user_manage" xml:space="preserve">
+    <value>用户管理</value>
+  </data>
+  <data name="delta_rn" xml:space="preserve">
+    <value>扩增曲线(DeltaRn)</value>
+  </data>
+  <data name="program_run" xml:space="preserve">
+    <value>运行程序</value>
+  </data>
+  <data name="temperature_curve" xml:space="preserve">
+    <value>温度曲线</value>
+  </data>
+  <data name="standard_curve" xml:space="preserve">
+    <value>标准曲线</value>
+  </data>
+  <data name="tbh_no" xml:space="preserve">
+    <value>序号</value>
+  </data>
+  <data name="tbh_well" xml:space="preserve">
+    <value>反应孔</value>
+  </data>
+  <data name="tbh_sample_type" xml:space="preserve">
+    <value>样本类型</value>
+  </data>
+  <data name="tbh_sample_id" xml:space="preserve">
+    <value>样本ID</value>
+  </data>
+  <data name="tbh_channels" xml:space="preserve">
+    <value>通道</value>
+  </data>
+  <data name="tbh_target" xml:space="preserve">
+    <value>目标信息</value>
+  </data>
+  <data name="tbh_ct" xml:space="preserve">
+    <value>Ct</value>
+  </data>
+  <data name="tbh_tm1" xml:space="preserve">
+    <value>Tm1</value>
+  </data>
+  <data name="tbh_tm2" xml:space="preserve">
+    <value>Tm2</value>
+  </data>
+  <data name="tbh_concentration" xml:space="preserve">
+    <value>浓度</value>
+  </data>
+  <data name="tbh_concentration_st" xml:space="preserve">
+    <value>标准品浓度</value>
+  </data>
+  <data name="tbh_sample_name" xml:space="preserve">
+    <value>样本名称</value>
+  </data>
+  <data name="tbh_project_name" xml:space="preserve">
+    <value>项目名称</value>
+  </data>
+  <data name="tbh_color" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+  <data name="tbh_conclusions" xml:space="preserve">
+    <value>结论</value>
+  </data>
+  <data name="tbh_notes" xml:space="preserve">
+    <value>备注</value>
+  </data>
+  <data name="username_password_empty" xml:space="preserve">
+    <value>用户名或密码不能为空</value>
+  </data>
+  <data name="username_password_error" xml:space="preserve">
+    <value>用户名或密码错误</value>
+  </data>
+  <data name="delta_rn_normalize" xml:space="preserve">
+    <value>扩增曲线(规一化)</value>
+  </data>
+  <data name="delta_rn_original" xml:space="preserve">
+    <value>原始扩增曲线</value>
+  </data>
+  <data name="threshold" xml:space="preserve">
+    <value>阈值</value>
+  </data>
+  <data name="dock_unit" xml:space="preserve">
+    <value>管号</value>
+  </data>
+  <data name="assay_type" xml:space="preserve">
+    <value>化验类型</value>
+  </data>
+  <data name="h1_temperature" xml:space="preserve">
+    <value>H1 温度</value>
+  </data>
+  <data name="h3_temperature" xml:space="preserve">
+    <value>H3 温度</value>
+  </data>
+  <data name="h1_time" xml:space="preserve">
+    <value>H1 时间</value>
+  </data>
+  <data name="h3_time" xml:space="preserve">
+    <value>H3 时间</value>
+  </data>
+  <data name="tbh_assay" xml:space="preserve">
+    <value>化验类型</value>
+  </data>
+  <data name="tbh_dock_unit" xml:space="preserve">
+    <value>管号</value>
+  </data>
+  <data name="tbh_starttime" xml:space="preserve">
+    <value>开始时间</value>
+  </data>
+  <data name="tbh_endtime" xml:space="preserve">
+    <value>结束时间</value>
+  </data>
+  <data name="tbh_time_remaining" xml:space="preserve">
+    <value>剩余时间</value>
+  </data>
+  <data name="tbh_current_heater" xml:space="preserve">
+    <value>当前加热器</value>
+  </data>
+  <data name="tbh_heat_time_remain" xml:space="preserve">
+    <value>加热剩余时间</value>
+  </data>
+  <data name="msg_int_error" xml:space="preserve">
+    <value>请输入正整数！</value>
+  </data>
+  <data name="msg_decimal_one_error" xml:space="preserve">
+    <value>请输入不超过一位的小数！</value>
+  </data>
+  <data name="msg_op_error" xml:space="preserve">
+    <value>操作失败</value>
+  </data>
+  <data name="msg_pause_lighting" xml:space="preserve">
+    <value>暂停会清空数据，是否暂停?</value>
+  </data>
+  <data name="msg_restart_lighting" xml:space="preserve">
+    <value>重新开始会清空数据，是否开始？</value>
+  </data>
+  <data name="tube_detection_time" xml:space="preserve">
+    <value>试管检测时长</value>
+  </data>
+  <data name="data_result_path" xml:space="preserve">
+    <value>系统备份数据</value>
+  </data>
+  <data name="user_path" xml:space="preserve">
+    <value>用户存储路径</value>
+  </data>
+  <data name="btn_browse" xml:space="preserve">
+    <value>浏览</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="time_remaining" xml:space="preserve">
+    <value>剩余时长:</value>
+  </data>
+  <data name="export_select" xml:space="preserve">
+    <value>选择导出</value>
+  </data>
+  <data name="export_all" xml:space="preserve">
+    <value>全部导出</value>
+  </data>
+  <data name="import" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="file_cannot_access" xml:space="preserve">
+    <value>无法访问此文件</value>
+  </data>
+  <data name="msg_hole_pull_out" xml:space="preserve">
+    <value>孔位试管已拔出，检测终止！</value>
+  </data>
+  <data name="msg_stop_experiment" xml:space="preserve">
+    <value>停止{0}孔位试管实验</value>
+  </data>
+  <data name="save_image" xml:space="preserve">
+    <value>保存图片</value>
+  </data>
+  <data name="analysis_parameters" xml:space="preserve">
+    <value>实验参数</value>
+  </data>
+</root>

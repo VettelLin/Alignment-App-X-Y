@@ -1,0 +1,137 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 按钮1 -->
+    <Style x:Key="CustomButton1" TargetType="Button">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="pack://application:,,,/Images/bg_login.png" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Height" Value="60"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="#000000"/>
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" >
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="pack://application:,,,/Images/bg_login.png" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="#000000"/>
+                        </Trigger>
+                        <!--<EventTrigger RoutedEvent="PreviewMouseDown">
+                            <EventTrigger.Actions>
+                                <SoundPlayerAction Source="/Static/sounds/buttonClick.wav"></SoundPlayerAction>
+                            </EventTrigger.Actions>
+                        </EventTrigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 日期选择 -->
+    <Style x:Key="DatePickerTextBoxStyle1" TargetType="DatePickerTextBox">
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <TextBox VerticalContentAlignment="Center" Width="{Binding With}" x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat={}{0:yyyy-MM-dd}, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="DatePickerStyle1" TargetType="{x:Type DatePicker}">
+        <Setter Property="Foreground" Value="#000"/>
+        <Setter Property="IsTodayHighlighted" Value="True"/>
+        <Setter Property="SelectedDateFormat" Value="Short"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint=".5,0" StartPoint=".5,1">
+                    <GradientStop Color="#FFA3AEB9" Offset="0"/>
+                    <GradientStop Color="#FF8399A9" Offset="0.375"/>
+                    <GradientStop Color="#FF718597" Offset="0.375"/>
+                    <GradientStop Color="#FF617584" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DatePicker}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="2">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_DisabledVisual"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid x:Name="PART_Root" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Stretch" Margin="0,0,0,0" >
+                            <Grid.Resources>
+                                <SolidColorBrush x:Key="DisabledBrush" Color="#A5FFFFFF"/>
+                                <ControlTemplate x:Key="DropDownButtonTemplate" TargetType="{x:Type Button}">
+                                    <Grid Background="#FF0C274B" FlowDirection="LeftToRight" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="32" Height="32">
+                                        <Path Fill="#26c9ff"  HorizontalAlignment="Center"  Stretch="Fill" VerticalAlignment="Center"  Data="M 890.127 145.672 h -43.389 V 132.78 c 0 -38.644 -31.466 -70.234 -69.922 -70.234 h -1.032 c -38.458 0 -69.922 31.59 -69.922 70.234 v 12.892 h -386.7 V 132.78 c 0 -38.644 -31.465 -70.234 -69.922 -70.234 h -1.063 c -38.457 0 -69.923 31.59 -69.923 70.234 v 12.892 h -43.296 c -38.458 0 -69.923 31.622 -69.923 70.207 v 671.446 c 0 38.644 31.466 70.236 69.923 70.236 h 755.17 c 38.458 0 69.922 -31.592 69.922 -70.236 V 215.879 c 0 -38.585 -31.464 -70.207 -69.923 -70.207 Z M 733.83 132.78 c 0 -23.222 18.793 -42.139 41.954 -42.139 h 1.032 c 23.13 0 41.954 18.918 41.954 42.139 v 124.927 c 0 23.224 -18.824 42.14 -41.954 42.14 h -1.032 c -23.161 0 -41.954 -18.916 -41.954 -42.14 V 132.779 Z m -527.607 0 c 0 -23.222 18.793 -42.139 41.955 -42.139 h 1.063 c 23.098 0 41.954 18.918 41.954 42.139 v 124.927 c 0 23.224 -18.856 42.14 -41.954 42.14 h -1.063 c -23.162 0 -41.955 -18.916 -41.955 -42.14 V 132.779 Z m 683.904 768.626 H 134.958 c -7.585 0 -13.985 -6.525 -13.985 -14.08 V 393.649 h 783.138 v 493.676 c 0 7.555 -6.399 14.08 -13.984 14.08 Z" />
+                                        <Path Fill="#26c9ff" Margin="7" HorizontalAlignment="Center" Stretch="Fill" VerticalAlignment="Center"  Data="M 223.755 494.2 H 352.78 v 63.488 H 223.755 V 494.2 Z M 449.035 494.2 h 128 v 63.488 h -128 V 494.2 Z M 673.291 494.2 h 125.952 v 63.488 H 673.291 V 494.2 Z M 223.755 623.224 H 352.78 v 62.464 H 223.755 v -62.464 Z M 449.035 623.224 h 128 v 62.464 h -128 v -62.464 Z M 673.291 623.224 h 125.952 v 62.464 H 673.291 v -62.464 Z M 223.755 749.176 H 352.78 v 65.536 H 223.755 v -65.536 Z M 449.035 749.176 h 128 v 65.536 h -128 v -65.536 Z M 673.291 749.176 h 125.952 v 65.536 H 673.291 v -65.536 Z" StrokeThickness="2"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="PART_Button" Grid.Column="1" Foreground="{TemplateBinding Foreground}" Focusable="False" HorizontalAlignment="Left" Margin="3,0,3,0" Grid.Row="0" Template="{StaticResource DropDownButtonTemplate}" VerticalAlignment="Center" Width="30"/>
+                            <DatePickerTextBox x:Name="PART_TextBox" Grid.Column="0" Width="{TemplateBinding Width}"  Foreground="{TemplateBinding Foreground}" Focusable="{TemplateBinding Focusable}" HorizontalContentAlignment="Stretch" Grid.Row="0" VerticalContentAlignment="Center" Style="{DynamicResource DatePickerTextBoxStyle1}" Background="{x:Null}" Margin="0,0,0,0" />
+                            <Grid x:Name="PART_DisabledVisual" Grid.ColumnSpan="2" Grid.Column="0" IsHitTestVisible="False" Opacity="0" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Grid.Column="0" Fill="#A5FFFFFF" RadiusY="1" Grid.Row="0" RadiusX="1"/>
+                                <Rectangle Grid.Column="1" Fill="#A5FFFFFF" Height="32" Margin="3,0,3,0" RadiusY="1" Grid.Row="0" RadiusX="1" Width="32"/>
+                                <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" PlacementTarget="{Binding ElementName=PART_TextBox}" StaysOpen="False"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 样本Label -->
+    <Style x:Key="TabStyle" TargetType="Label">
+        <Setter Property="Background" Value="#f1f4f9" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Label}">
+                    <Border Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

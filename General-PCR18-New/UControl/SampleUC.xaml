@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="General_PCR18.UControl.SampleUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:General_PCR18.UControl"
+             xmlns:lang="clr-namespace:General_PCR18.Lang"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="120">
+    <Grid x:Name="mainGrid" ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=SeparateHeight}"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border x:Name="borderGrid" Grid.Row="0" BorderThickness="2" BorderBrush="#9b51e0" CornerRadius="4" Background="#fff"
+                MouseLeftButtonDown="Click_MouseLeftButtonDown">
+            <Grid x:Name="boxGrid" Margin="1">
+                <Grid x:Name="progressGrid" Opacity="0.5"></Grid>
+                <Viewbox Margin="1 0 1 0" x:Name="timerBox">
+                    <Grid x:Name="timerGrid" Opacity="0.8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Visibility="Collapsed">
+                            <Label x:Name="countdownTitle" Content="" FontSize="16" FontWeight="Bold"></Label>
+                            <Label Content="{Binding Res.time_remaining, Source={x:Static lang:RService.Current}}" FontSize="20"></Label>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0">
+                            <Label x:Name="HourArea" Content="00" FontWeight="Bold" FontSize="24" Visibility="Collapsed"></Label>
+                            <Label Content=":" FontSize="20" Visibility="Collapsed"></Label>
+                            <Label x:Name="MinuteArea" Content="00" FontWeight="Bold" FontSize="24"></Label>
+                            <Label Content=":" FontSize="20" Visibility="Collapsed"></Label>
+                            <Label x:Name="SecondArea" Content="00" FontWeight="Bold" FontSize="24" Visibility="Collapsed"></Label>
+                        </StackPanel>
+                    </Grid>
+                </Viewbox>
+                <Grid x:Name="gridSmapleType" Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=SampleTypeDisplay}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="10"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="5" >
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=PositiveMarker}" DockPanel.Dock="Right"></TextBlock>
+                        <TextBlock x:Name="txtSampleType" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=SampleType}" DockPanel.Dock="Left"></TextBlock>
+                    </DockPanel>
+
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=PatientId}"></TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Border>
+
+        <Button Grid.Row="2" Background="#06919d" FontWeight="Bold" Foreground="#cccccc" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=ButtonText}" 
+                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=ButtonEnabled}"
+                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SampleUC}}, Path=ButtonDisplay}"
+                Click="Start_Click"></Button>
+
+    </Grid>
+</UserControl>
