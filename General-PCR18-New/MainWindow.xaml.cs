@@ -988,7 +988,7 @@ namespace General_PCR18
         private bool xAlignMode = false;                 // 是否处于 X 对齐测试
         private int xAlignIdx = 0;                       // 当前候选索引（0..6）
         private int xAlignCyclesDone = 0;                // 当前候选已完成的轮次
-		private const int xAlignCyclesPerCandidate = 1;  // 每个候选跑 1 轮
+		private const int xAlignCyclesPerCandidate = 2;  // 每个候选跑 2 轮
 		private readonly double[] xAlignBest = new double[8]; // 每个候选的最大 raw（现有 8 组）
         private int xAlignChannel = 0;                   // 选定通道：0=FAM,1=Cy5,2=VIC(HEX),3=Cy5.5,4=ROX
         private string xAlignChannelName = "FAM";        // 记录通道名称用于提示
@@ -996,6 +996,12 @@ namespace General_PCR18
 		private bool xAlignResultShown = false;          // 结果弹窗只显示一次
 		private int xAlignLastScoredLightCycle = -1;     // 上次已计分的 lightCycle，防重复计分
 		private int xAlignScoredCount = 0;              // 累计已计分的轮次数（全体候选总和）
+		private readonly int[] xAlignLastDataCount = new int[5]; // 各通道上次数据点数，防止未采样就计分
+		private bool xAlignFinalizePending = false;      // 达到计分阈值后，等待空档弹窗
+		private bool autoStartYAfterX = false;          // X 完成后不再自动开始 Y 对齐（改为手动按 F9）
+		private bool pendingStartYAfterX = false;       // 延迟到下一轮 case0 空档再启动 Y 对齐
+		private DateTime xAlignPresetCooldownUntil = DateTime.MinValue; // 锁定最佳组后给设备的冷却时间
+		private DateTime xAlignGroupCooldownUntil = DateTime.MinValue;  // 每组候选预设写入后的冷却时间
 		private readonly string[] xAlignLabels = new string[]
         {
             "-2.00 mm → 541, 1016, 1500, 1982, 2458",
@@ -1007,6 +1013,36 @@ namespace General_PCR18
 			"-0.25 mm → 651, 1126, 1610, 2092, 2568",
 			"0.00 mm → 667, 1142, 1626, 2108, 2584",
         };
+
+		// Y 轴 Alignment 测试控制（通过调整每轮开始前的 Y 轴预移动量）
+		private bool yAlignMode = false;                 // 是否处于 Y 对齐测试
+		private int yAlignIdx = 0;                       // 当前候选索引（0..3）
+		private int yAlignCyclesDone = 0;                // 当前候选已完成的轮次
+		private const int yAlignCyclesPerCandidate = 2;  // 每个候选跑 2 轮
+		private readonly double[] yAlignBest = new double[4]; // 每个候选的最大 raw
+		private int yAlignChannel = 0;                   // 选定通道
+		private string yAlignChannelName = "FAM";        // 记录通道名称
+		private bool yAlignResultShown = false;          // 结果弹窗仅一次
+		private int yAlignLastScoredLightCycle = -1;     // 防重复计分
+		private int yAlignScoredCount = 0;               // 累计计分
+		private readonly double[] yAlignCandidatesMm = new double[] { 1.50, 1.25, 1.125, 1.375 };
+		private readonly string[] yAlignLabels = new string[] { "1.50 mm", "1.25 mm", "1.125 mm", "1.375 mm" };
+
+		// 当前生效的 Y 轴预移动与行间补偿（非对齐模式时使用）
+		private double currentYPreMoveMm = 1.375;        // 默认预移动 1.375 mm
+		private double currentYRowExtraMm = 1.0;         // 行间额外前移（B/C），默认 1.0 mm
+
+		private double GetCurrentPreMoveMm()
+		{
+			if (yAlignMode) return yAlignCandidatesMm[Math.Max(0, Math.Min(yAlignCandidatesMm.Length - 1, yAlignIdx))];
+			return currentYPreMoveMm;
+		}
+
+		private double GetYExtraMmForRows()
+		{
+			if (yAlignMode) return yAlignCandidatesMm[Math.Max(0, Math.Min(yAlignCandidatesMm.Length - 1, yAlignIdx))];
+			return currentYRowExtraMm;
+		}
 
         // 扫描步骤 ACK 等待控制（只等待“已接收/开始执行”的回执，不等待动作完成）
         private volatile bool motorAckPending = false;      // 当前步骤是否正在等待 ACK
@@ -1036,12 +1072,21 @@ namespace General_PCR18
             }
         }
 
-        // 针对 serpentine 步骤的 ACK 期望：电机 0x07 指令统一回 0x87
+        // 针对 serpentine 步骤的 ACK 期望：默认 0x87；step0 允许 0x92（0x12 写入类回执）以避免等待卡死
         private bool IsExpectedAckForStep(string ackHead, int step)
         {
-            // 当前扫描步骤（0..5）均通过 0x07 指令下发（含 X 扫描与 Y 绝对移动），
-            // 正确回执统一为 0x87（即 5E8700）。
-            return string.Equals(ackHead, "5E8700", StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(ackHead, "5E8700", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // 对 step0（X 正向扫描前）容忍 5E9200，以避免 0x12 写入回执占先导致长时间等待
+            if (step == 0 && string.Equals(ackHead, "5E9200", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1059,9 +1104,23 @@ namespace General_PCR18
 
         private void ReadLigthCmd()
         {
-            LogHelper.Debug("===>Main 扫描中...");
+			LogHelper.Debug($"===>Main 扫描中... physCycle={lightCycle + 1} (zero-based={lightCycle})");
 
             GlobalData.LastLightType = 0;
+
+			// 汇总一次 X/Y 对齐与电机状态，便于你复制排查
+			try
+			{
+				double groupCd = Math.Max(0, (xAlignGroupCooldownUntil - DateTime.Now).TotalMilliseconds);
+				double presetCd = Math.Max(0, (xAlignPresetCooldownUntil - DateTime.Now).TotalMilliseconds);
+				LogHelper.Debug(
+					$"[Tick] cycle={lightCycle} step={GlobalData.DS.RunMonitorMotorYIndex} " +
+					$"xMode={xAlignMode} xIdx={xAlignIdx} xDone={xAlignCyclesDone}/{xAlignCyclesPerCandidate} xScored={xAlignScoredCount} xSent5={xAlignPresetSentThisCandidate} " +
+					$"yMode={yAlignMode} yIdx={yAlignIdx} yDone={yAlignCyclesDone}/{yAlignCyclesPerCandidate} yScored={yAlignScoredCount} " +
+					$"groupCooldown={groupCd:0}ms presetCooldown={presetCd:0}ms " +
+					$"motorPending={motorAckPending} motorStep={motorAckStep} retries={motorAckRetries}");
+			}
+			catch { }
 
             // 若开启 X 对齐模式且准备开始本候选，则在进入 case0 之前下发 5 条写入命令
             if (xAlignMode && !xAlignPresetSentThisCandidate && !motorAckPending
@@ -1072,6 +1131,8 @@ namespace General_PCR18
                     LogHelper.Debug($"[X-Align] 下发候选 {xAlignIdx}: {xAlignLabels[Math.Max(0, Math.Min(xAlignLabels.Length-1, xAlignIdx))]}");
                     pcr18Client.SetXAlignmentPreset(xAlignIdx);
                     xAlignPresetSentThisCandidate = true;
+                    // 每组预设写入后增加冷却期，避免紧接着扫描
+                    xAlignGroupCooldownUntil = DateTime.Now.AddMilliseconds(1000);
                 }
                 catch (Exception ex)
                 {
@@ -1080,14 +1141,14 @@ namespace General_PCR18
             }
 
             // 若本轮需要先执行一次 Y 轴前移 1mm，则优先处理该预移动步骤（不改变 case 流程编号）
-            if (preYShiftRequest && !preYShiftDone && !motorAckPending)
+			if (preYShiftRequest && !preYShiftDone && !motorAckPending)
             {
-                // 1.375mm = 1.375/9 格；MotorControlYAbsolute4Byte(格数) -> pulse = 5905 * 格数
-                double oneMmInGrids = 1.375 / 9.0;
-                LogHelper.Debug((object)"预步骤：Y 轴前移 1.375mm (1.375/9 格)");
+				// 动态预移动：mm -> 格数（1 格 = 9 mm）
+				double grids = GetCurrentPreMoveMm() / 9.0;
+				LogHelper.Debug((object)$"预步骤：Y 轴前移 {GetCurrentPreMoveMm():0.###} mm ({GetCurrentPreMoveMm():0.###}/9 格)");
                 SendOrRetryMotorCmd(() =>
                 {
-                    pcr18Client.MotorControlYAbsolute4Byte(oneMmInGrids);
+					pcr18Client.MotorControlYAbsolute4Byte(grids);
                     Thread.Sleep(100);
                 }, 100); // 使用 100 作为预移动的 step 编号
                 return;
@@ -1277,28 +1338,111 @@ namespace General_PCR18
                 case 0:
                     // 只要进入新的步骤（不在等待中），重置软继续计数
                     softContinueConsecutive = 0;
-                    // X 对齐：确保本候选的 5 条写入命令已在 case0 之前发送
-                    if (xAlignMode && !xAlignPresetSentThisCandidate && !motorAckPending)
-                    {
-                        try
-                        {
-                            LogHelper.Debug($"[X-Align@case0] 下发候选 {xAlignIdx}: {xAlignLabels[Math.Max(0, Math.Min(xAlignLabels.Length-1, xAlignIdx))]}");
-                            pcr18Client.SetXAlignmentPreset(xAlignIdx);
-                            xAlignPresetSentThisCandidate = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.Error(ex);
-                        }
-                    }
-                    // 每轮开始前优先执行一次 Y 轴前移 1mm（1/9 格）
+					// 若 X 对齐刚刚锁定了最佳组，则等待冷却时间结束再发送扫描指令
+					if (!motorAckPending && DateTime.Now < xAlignPresetCooldownUntil)
+					{
+						LogHelper.Debug($"[X-Align] 冷却中，推迟 case0 扫描 {(xAlignPresetCooldownUntil - DateTime.Now).TotalMilliseconds:0} ms");
+						return;
+					}
+					// 若 X 对齐计分已达阈值且结果待弹窗，且当前无等待 ACK，优先在 case0 空档完成弹窗与收尾
+					if (xAlignFinalizePending && !motorAckPending && xAlignMode)
+					{
+						try
+						{
+							int bestIdx = 0;
+							double bestVal = double.MinValue;
+							for (int k = 0; k < xAlignBest.Length; k++)
+							{
+								if (xAlignBest[k] > bestVal)
+								{
+									bestVal = xAlignBest[k];
+									bestIdx = k;
+								}
+							}
+
+							try
+							{
+								pcr18Client.SetXAlignmentPreset(bestIdx);
+								xAlignPresetCooldownUntil = DateTime.Now.AddMilliseconds(800);
+							}
+							catch (Exception ex)
+							{
+								LogHelper.Error(ex);
+							}
+
+							var sb = new StringBuilder();
+							sb.AppendLine($"X 轴最佳组：{xAlignLabels[bestIdx]}");
+							sb.AppendLine($"通道：{xAlignChannelName}");
+							sb.AppendLine($"最佳峰值：{bestVal:0.##}");
+							sb.AppendLine();
+							sb.AppendLine("各组峰值：");
+							for (int iList = 0; iList < xAlignLabels.Length; iList++)
+							{
+								double v = xAlignBest[iList];
+								string vs = (v == double.MinValue) ? "-" : v.ToString("0.##");
+								sb.AppendLine($"- {xAlignLabels[iList]}  →  {vs}");
+							}
+							string msg = sb.ToString();
+							LogHelper.Info("[X-Align] 完成。 " + msg.Replace("\n", " | "));
+							Dispatcher.Invoke(() =>
+							{
+								System.Windows.MessageBox.Show(this, msg, "Alignment 结果", MessageBoxButton.OK, MessageBoxImage.Information);
+							});
+
+							xAlignMode = false;
+							xAlignResultShown = true;
+							xAlignFinalizePending = false;
+							try
+							{
+								timerReadLight.Enabled = false;
+								GlobalData.DS.RunMonitorMotorYIndex = 0;
+								LogHelper.Info("[X-Align] 已完成并停止扫描。请按 F9 选择通道，开始 Y 轴校准。");
+							}
+							catch (Exception exStop)
+							{
+								LogHelper.Error(exStop);
+							}
+						}
+						catch (Exception ex)
+						{
+							LogHelper.Error(ex);
+						}
+						return;
+					}
+					// 若已完成 X 对齐且计划自动启动 Y 对齐，则在 case0 空档并确保无 ACK 等待时延迟约 300ms 再启动
+					if (pendingStartYAfterX && !xAlignMode && !yAlignMode && !motorAckPending)
+					{
+						pendingStartYAfterX = false;
+						try
+						{
+							LogHelper.Info("[Y-Align] 准备在 case0 空档启动（延迟 300ms）");
+							Task.Run(async () =>
+							{
+								await Task.Delay(300);
+								try
+								{
+									Dispatcher.Invoke(() => StartYAlignmentTest(xAlignChannelName));
+								}
+								catch (Exception ex)
+								{
+									LogHelper.Error(ex);
+								}
+							});
+						}
+						catch (Exception ex)
+						{
+							LogHelper.Error(ex);
+						}
+					}
+                    // X 对齐：预设写入已在进入 case0 之前完成，这里不重复下发，避免双发导致设备忙碌与 ACK 竞争
+					// 每轮开始前优先执行一次 Y 轴前移（候选或当前值）
                     if (preYShiftRequest && !preYShiftDone && !motorAckPending)
                     {
-                        double oneMmInGrids = 1.375 / 9.0;
-                        LogHelper.Debug((object)"case 0: 预移动 Y 轴 1.375mm (1.375/9 格)");
+						double grids = GetCurrentPreMoveMm() / 9.0;
+						LogHelper.Debug((object)$"case 0: 预移动 Y 轴 {GetCurrentPreMoveMm():0.###} mm ({GetCurrentPreMoveMm():0.###}/9 格)");
                         SendOrRetryMotorCmd(() =>
                         {
-                            pcr18Client.MotorControlYAbsolute4Byte(oneMmInGrids);
+							pcr18Client.MotorControlYAbsolute4Byte(grids);
                             Thread.Sleep(100);
                         }, 100); // 使用 100 作为预移动的 ACK 步骤编号
                         return;
@@ -1318,13 +1462,26 @@ namespace General_PCR18
                     SendOrRetryMotorCmd(() =>
                     {
                         // 在原有 3.5 格基础上，额外前移 1mm（1/9 格）
-                        pcr18Client.MotorControlYAbsolute4Byte(3.5 + 1.0 / 9.0);
+						double extraMm = GetYExtraMmForRows();
+						pcr18Client.MotorControlYAbsolute4Byte(3.5 + extraMm / 9.0);
                         Thread.Sleep(100);
                         // 移除辅助 0x07 命令，避免 ACK 混淆
                     }, 1);
                     break;
                 case 2:
                     softContinueConsecutive = 0;
+                    // 若每组预设写入后仍在冷却，则推迟 case2 扫描
+                    if (!motorAckPending && DateTime.Now < xAlignGroupCooldownUntil)
+                    {
+                        LogHelper.Debug($"[X-Align] 组冷却中，推迟 case2 扫描 {(xAlignGroupCooldownUntil - DateTime.Now).TotalMilliseconds:0} ms");
+                        return;
+                    }
+					// 若 X 对齐刚刚锁定了最佳组，则等待冷却时间结束再发送扫描指令
+					if (!motorAckPending && DateTime.Now < xAlignPresetCooldownUntil)
+					{
+						LogHelper.Debug($"[X-Align] 冷却中，推迟 case2 扫描 {(xAlignPresetCooldownUntil - DateTime.Now).TotalMilliseconds:0} ms");
+						return;
+					}
                     LogHelper.Debug((object)"X 轴反向扫描");
                     SendOrRetryMotorCmd(() =>
                     {
@@ -1341,12 +1498,25 @@ namespace General_PCR18
                     SendOrRetryMotorCmd(() =>
                     {
                         // 在原有 7 格基础上，额外前移 1mm（1/9 格）
-                        pcr18Client.MotorControlYAbsolute4Byte(7.0 + 1.0 / 9.0);
+						double extraMm = GetYExtraMmForRows();
+						pcr18Client.MotorControlYAbsolute4Byte(7.0 + extraMm / 9.0);
                         Thread.Sleep(100);
                     }, 3);
                     break;
                 case 4:
                     softContinueConsecutive = 0;
+                    // 若每组预设写入后仍在冷却，则推迟 case4 扫描
+                    if (!motorAckPending && DateTime.Now < xAlignGroupCooldownUntil)
+                    {
+                        LogHelper.Debug($"[X-Align] 组冷却中，推迟 case4 扫描 {(xAlignGroupCooldownUntil - DateTime.Now).TotalMilliseconds:0} ms");
+                        return;
+                    }
+					// 若 X 对齐刚刚锁定了最佳组，则等待冷却时间结束再发送扫描指令
+					if (!motorAckPending && DateTime.Now < xAlignPresetCooldownUntil)
+					{
+						LogHelper.Debug($"[X-Align] 冷却中，推迟 case4 扫描 {(xAlignPresetCooldownUntil - DateTime.Now).TotalMilliseconds:0} ms");
+						return;
+					}
                     LogHelper.Debug((object)"X 轴正向扫描");
                     SendOrRetryMotorCmd(() =>
                     {
@@ -1442,18 +1612,27 @@ namespace General_PCR18
                             {
 								if (xAlignLastScoredLightCycle != lightCycle)
 								{
-									double cyclePeak = GetCurrentCyclePeakForChannel(xAlignChannel);
-									if (xAlignIdx >= 0 && xAlignIdx < xAlignBest.Length)
+									// 防止未采样即计分：只有通道数据长度比上次多，才取最后一个值计分
+									double cyclePeak = GetCurrentCyclePeakForChannel(xAlignChannel, out int dataCountNow);
+									if (dataCountNow > xAlignLastDataCount[xAlignChannel])
 									{
-										if (cyclePeak > xAlignBest[xAlignIdx])
+										if (xAlignIdx >= 0 && xAlignIdx < xAlignBest.Length)
 										{
-											xAlignBest[xAlignIdx] = cyclePeak;
+											if (cyclePeak > xAlignBest[xAlignIdx])
+											{
+												xAlignBest[xAlignIdx] = cyclePeak;
+											}
 										}
+										xAlignCyclesDone++;
+										xAlignScoredCount++;
+										xAlignLastScoredLightCycle = lightCycle;
+										xAlignLastDataCount[xAlignChannel] = dataCountNow;
+										LogHelper.Debug($"[X-Align] 候选 {xAlignIdx} 第 {xAlignCyclesDone}/{xAlignCyclesPerCandidate} 轮，峰值={cyclePeak:0.##}, 目前最佳={xAlignBest[Math.Max(0,Math.Min(xAlignIdx,xAlignBest.Length-1))]:0.##}, 数据点={dataCountNow}");
 									}
-									xAlignCyclesDone++;
-									xAlignScoredCount++;
-									xAlignLastScoredLightCycle = lightCycle;
-									LogHelper.Debug($"[X-Align] 候选 {xAlignIdx} 第 {xAlignCyclesDone}/{xAlignCyclesPerCandidate} 轮，峰值={cyclePeak:0.##}, 目前最佳={xAlignBest[Math.Max(0,Math.Min(xAlignIdx,xAlignBest.Length-1))]:0.##}");
+									else
+									{
+										LogHelper.Debug($"[X-Align] 跳过计分：通道数据未增长 (count={dataCountNow}, last={xAlignLastDataCount[xAlignChannel]}), lightCycle={lightCycle}, candidate={xAlignIdx}");
+									}
 								}
 								else
 								{
@@ -1465,6 +1644,8 @@ namespace General_PCR18
                                     xAlignIdx++;
                                     xAlignCyclesDone = 0;
                                     xAlignPresetSentThisCandidate = false; // 进入下一候选前，允许在 case0 前再次下发 5 条命令
+									// 切组后复位数据计数，避免上一组的残留数据在新组第一轮被误计分
+									for (int iCnt = 0; iCnt < xAlignLastDataCount.Length; iCnt++) xAlignLastDataCount[iCnt] = 0;
 									try
 									{
 										LogHelper.Info($"[X-Align] 切换到候选 {xAlignIdx} / {xAlignLabels.Length - 1}：{xAlignLabels[Math.Max(0, Math.Min(xAlignLabels.Length - 1, xAlignIdx))]}");
@@ -1473,62 +1654,102 @@ namespace General_PCR18
                                 }
 
 								// 仅当实际计分次数达到“候选数 × 每候选轮次”才进入最终评估与弹窗
-								if (xAlignScoredCount >= xAlignLabels.Length * xAlignCyclesPerCandidate)
-                                {
+								if (xAlignScoredCount >= xAlignLabels.Length * xAlignCyclesPerCandidate && xAlignIdx >= xAlignLabels.Length)
+								{
 									if (!xAlignResultShown)
 									{
-										// 选择最大值对应的候选
-										int bestIdx = 0;
-										double bestVal = double.MinValue;
-										for (int k = 0; k < xAlignBest.Length; k++)
-										{
-											if (xAlignBest[k] > bestVal)
-											{
-												bestVal = xAlignBest[k];
-												bestIdx = k;
-											}
-										}
-
-										// 锁定最佳组
-										try
-										{
-											pcr18Client.SetXAlignmentPreset(bestIdx);
-										}
-										catch (Exception ex)
-										{
-											LogHelper.Error(ex);
-										}
-
-										// 组装结果弹窗：包含所有7组的峰值列表
-										var sb = new StringBuilder();
-										sb.AppendLine($"X 轴最佳组：{xAlignLabels[bestIdx]}");
-										sb.AppendLine($"通道：{xAlignChannelName}");
-										sb.AppendLine($"最佳峰值：{bestVal:0.##}");
-										sb.AppendLine();
-										sb.AppendLine("各组峰值：");
-										for (int iList = 0; iList < xAlignLabels.Length; iList++)
-										{
-											double v = xAlignBest[iList];
-											string vs = (v == double.MinValue) ? "-" : v.ToString("0.##");
-											sb.AppendLine($"- {xAlignLabels[iList]}  →  {vs}");
-										}
-										string msg = sb.ToString();
-										LogHelper.Info("[X-Align] 完成。 " + msg.Replace("\n", " | "));
-										Dispatcher.Invoke(() =>
-										{
-											System.Windows.MessageBox.Show(this, msg, "Alignment 结果", MessageBoxButton.OK, MessageBoxImage.Information);
-										});
-
-										xAlignMode = false;
-										xAlignResultShown = true;
+										xAlignFinalizePending = true; // 延后到下一轮 case0 空档统一弹窗
+										LogHelper.Info("[X-Align] 计分已达阈值，等待轮次结束的空档再弹窗。");
 									}
-                                }
+								}
                             }
                             catch (Exception ex)
                             {
                                 LogHelper.Error(ex);
                             }
                         }
+						// 若处于 Y 对齐模式：记录本轮峰值，控制候选切换与完成提示（防重复计分）
+						if (yAlignMode)
+						{
+							try
+							{
+								if (yAlignLastScoredLightCycle != lightCycle)
+								{
+									double cyclePeak = GetCurrentCyclePeakForChannel(yAlignChannel);
+									if (yAlignIdx >= 0 && yAlignIdx < yAlignBest.Length)
+									{
+										if (cyclePeak > yAlignBest[yAlignIdx])
+										{
+											yAlignBest[yAlignIdx] = cyclePeak;
+										}
+									}
+									yAlignCyclesDone++;
+									yAlignScoredCount++;
+									yAlignLastScoredLightCycle = lightCycle;
+									LogHelper.Debug($"[Y-Align] 候选 {yAlignIdx} ({yAlignLabels[yAlignIdx]}) 第 {yAlignCyclesDone}/{yAlignCyclesPerCandidate} 轮，峰值={cyclePeak:0.##}, 目前最佳={yAlignBest[Math.Max(0,Math.Min(yAlignIdx,yAlignBest.Length-1))]:0.##}");
+								}
+								else
+								{
+                                    LogHelper.Debug($"[Y-Align] 跳过重复计分，lightCycle={lightCycle}");
+								}
+
+								if (yAlignCyclesDone >= yAlignCyclesPerCandidate)
+								{
+									yAlignIdx++;
+									yAlignCyclesDone = 0;
+									// 下一候选的预移动将在下一轮 case0 前按 GetCurrentPreMoveMm() 生效
+								}
+
+								if (yAlignScoredCount >= yAlignLabels.Length * yAlignCyclesPerCandidate)
+								{
+									if (!yAlignResultShown)
+									{
+										int bestIdx = 0;
+										double bestVal = double.MinValue;
+										for (int k = 0; k < yAlignBest.Length; k++)
+										{
+											if (yAlignBest[k] > bestVal)
+											{
+												bestVal = yAlignBest[k];
+												bestIdx = k;
+											}
+										}
+
+										// 应用最佳 Y 预移动和行间额外前移（A/B/C 同步增加同样的 mm）
+										currentYPreMoveMm = yAlignCandidatesMm[bestIdx];
+										currentYRowExtraMm = yAlignCandidatesMm[bestIdx];
+
+										// 弹窗汇总
+										var sb = new StringBuilder();
+										sb.AppendLine($"Y 轴最佳预移动：{yAlignLabels[bestIdx]}");
+										sb.AppendLine($"通道：{yAlignChannelName}");
+										sb.AppendLine($"峰值：{bestVal:0.##}");
+										sb.AppendLine();
+										sb.AppendLine("各组峰值：");
+										for (int iList = 0; iList < yAlignLabels.Length; iList++)
+										{
+											double v = yAlignBest[iList];
+											string vs = (v == double.MinValue) ? "-" : v.ToString("0.##");
+											sb.AppendLine($"- {yAlignLabels[iList]}  →  {vs}");
+										}
+										string msg = sb.ToString();
+
+										LogHelper.Info("[Y-Align] 完成。 " + msg.Replace("\n", " | "));
+										Dispatcher.Invoke(() =>
+										{
+											System.Windows.MessageBox.Show(this, msg, "Y Alignment 结果", MessageBoxButton.OK, MessageBoxImage.Information);
+										});
+
+										yAlignMode = false;
+										yAlignResultShown = true;
+									}
+								}
+							}
+							catch (Exception ex)
+							{
+								LogHelper.Error(ex);
+							}
+						}
 
                         LogHelper.Debug("===>Main 扫描了 {0} 轮", lightCycle);
                     });
@@ -1560,6 +1781,11 @@ namespace General_PCR18
                     StartXAlignmentWithPrompt();
                     e.Handled = true;
                 }
+				else if (e.Key == Key.F9)
+				{
+					StartYAlignmentWithPrompt();
+					e.Handled = true;
+				}
             }
             catch { }
         }
@@ -1614,6 +1840,18 @@ namespace General_PCR18
             if (res == true) return selected;
             return null;
         }
+
+		private void StartYAlignmentWithPrompt()
+		{
+			if (xAlignMode)
+			{
+				LogHelper.Warn("[Y-Align] 请先完成 X 轴对齐。");
+				return;
+			}
+			string channel = PromptSelectXAlignChannel();
+			if (string.IsNullOrWhiteSpace(channel)) return;
+			StartYAlignmentTest(channel);
+		}
 
         /// <summary>
         /// 发送电机命令并进入 ACK 等待；仅在未等待时发送。
@@ -1707,6 +1945,7 @@ namespace General_PCR18
             xAlignChannelName = channelName?.Trim();
             xAlignChannel = MapChannelName(xAlignChannelName);
             for (int i = 0; i < xAlignBest.Length; i++) xAlignBest[i] = double.MinValue;
+			for (int i = 0; i < xAlignLastDataCount.Length; i++) xAlignLastDataCount[i] = 0;
             xAlignIdx = 0;
             xAlignCyclesDone = 0;
             xAlignPresetSentThisCandidate = false;
@@ -1716,6 +1955,38 @@ namespace General_PCR18
 			xAlignScoredCount = 0;
             LogHelper.Info($"[X-Align] 启动。通道={xAlignChannelName}({xAlignChannel})，每候选 {xAlignCyclesPerCandidate} 轮，总候选 {xAlignLabels.Length} 组。");
         }
+
+		/// <summary>
+		/// 启动 Y 轴对齐测试：按候选预移动量（mm）跑数据，选择峰值最高的一组
+		/// </summary>
+		public void StartYAlignmentTest(string channelName)
+		{
+			yAlignChannelName = channelName?.Trim();
+			yAlignChannel = MapChannelName(yAlignChannelName);
+			for (int i = 0; i < yAlignBest.Length; i++) yAlignBest[i] = double.MinValue;
+			yAlignIdx = 0;
+			yAlignCyclesDone = 0;
+			yAlignMode = true;
+			yAlignResultShown = false;
+			yAlignLastScoredLightCycle = -1;
+			yAlignScoredCount = 0;
+			// 若 X 对齐仍在进行，直接中止 X 状态，优先执行 Y 对齐
+			if (xAlignMode || xAlignFinalizePending)
+			{
+				LogHelper.Warn("[Y-Align] 中止未完成的 X 对齐，立即开始 Y 对齐。");
+				xAlignMode = false;
+				xAlignFinalizePending = false;
+				xAlignResultShown = false;
+				xAlignPresetSentThisCandidate = false;
+				motorAckPending = false;
+			}
+			// 确保扫描计时器已开启
+			StartReadLightTimer();
+			// 新一轮开始前触发一次预移动
+			preYShiftRequest = true;
+			preYShiftDone = false;
+			LogHelper.Info($"[Y-Align] 启动。通道={yAlignChannelName}({yAlignChannel})，候选：{string.Join(", ", yAlignLabels)}；每候选 {yAlignCyclesPerCandidate} 轮。");
+		}
 
         private int MapChannelName(string name)
         {
@@ -1764,6 +2035,68 @@ namespace General_PCR18
                 }
             }
             catch { }
+            if (max == double.MinValue) return 0;
+            return max;
+        }
+
+        // 带数据长度输出的版本，用于防止“未采样就计分”
+        private double GetCurrentCyclePeakForChannel(int ch, out int dataCount)
+        {
+            double max = double.MinValue;
+            int count = 0;
+            try
+            {
+                switch (ch)
+                {
+                    case 0: // FAM
+                        for (int t = 0; t < 18; t++)
+                            if (GlobalData.DataFAMY[t] != null && GlobalData.DataFAMY[t].Count > 0)
+                            {
+                                int c = GlobalData.DataFAMY[t].Count;
+                                count = Math.Max(count, c);
+                                max = Math.Max(max, GlobalData.DataFAMY[t][c - 1]);
+                            }
+                        break;
+                    case 1: // Cy5
+                        for (int t = 0; t < 18; t++)
+                            if (GlobalData.DataCy5Y[t] != null && GlobalData.DataCy5Y[t].Count > 0)
+                            {
+                                int c = GlobalData.DataCy5Y[t].Count;
+                                count = Math.Max(count, c);
+                                max = Math.Max(max, GlobalData.DataCy5Y[t][c - 1]);
+                            }
+                        break;
+                    case 2: // VIC(HEX)
+                        for (int t = 0; t < 18; t++)
+                            if (GlobalData.DataVICY[t] != null && GlobalData.DataVICY[t].Count > 0)
+                            {
+                                int c = GlobalData.DataVICY[t].Count;
+                                count = Math.Max(count, c);
+                                max = Math.Max(max, GlobalData.DataVICY[t][c - 1]);
+                            }
+                        break;
+                    case 3: // Cy5.5
+                        for (int t = 0; t < 18; t++)
+                            if (GlobalData.DataCy55Y[t] != null && GlobalData.DataCy55Y[t].Count > 0)
+                            {
+                                int c = GlobalData.DataCy55Y[t].Count;
+                                count = Math.Max(count, c);
+                                max = Math.Max(max, GlobalData.DataCy55Y[t][c - 1]);
+                            }
+                        break;
+                    case 4: // ROX
+                        for (int t = 0; t < 18; t++)
+                            if (GlobalData.DataROXY[t] != null && GlobalData.DataROXY[t].Count > 0)
+                            {
+                                int c = GlobalData.DataROXY[t].Count;
+                                count = Math.Max(count, c);
+                                max = Math.Max(max, GlobalData.DataROXY[t][c - 1]);
+                            }
+                        break;
+                }
+            }
+            catch { }
+            dataCount = count;
             if (max == double.MinValue) return 0;
             return max;
         }
